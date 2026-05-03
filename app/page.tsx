@@ -1,5 +1,5 @@
 import styles from "./page.module.scss";
-import AttackCard from "./components/ui/AttackCard";
+import AttackCard from "@/components/ui/AttackCard";
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
         <AttackCard
           title="MFA Fatigue"
           description="Повтарящи се login заявки"
-          attackLink="/attacks/mfa"
+          attackLink="/attacks/mfa-fatigue"
         />
 
         <AttackCard
