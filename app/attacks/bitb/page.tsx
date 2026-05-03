@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.scss";
-import FakeBrowserPopup from "../../components/bitb/FakeBrowserPopup";
+import FakeBrowserPopup from "@/components/bitb/FakeBrowserPopup";
 
 export default function BitBAttackPage() {
   const [showPopup, setShowPopup] = useState(false);
@@ -26,7 +26,6 @@ export default function BitBAttackPage() {
             Access your personal dashboard, documents and recent account
             activity.
           </p>
-
           <button
             className={styles.googleButton}
             onClick={() => setShowPopup(true)}
@@ -40,7 +39,6 @@ export default function BitBAttackPage() {
             />
             <span>Sign in with Google</span>
           </button>
-
           <p className={styles.trustText}>
             Protected access for registered users
           </p>

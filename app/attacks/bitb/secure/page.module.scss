@@ -1,0 +1,282 @@
+.container {
+  min-height: 100vh;
+  padding: 56px 20px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(34, 197, 94, 0.16),
+      transparent 32%
+    ),
+    linear-gradient(135deg, #f5f7fa, #e4e7ec);
+}
+
+.hero,
+.authCard,
+.comparison,
+.actions {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero {
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 16px 0 12px;
+    font-size: 46px;
+    line-height: 1.08;
+    color: #0f172a;
+  }
+
+  p {
+    max-width: 760px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: #475569;
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.authCard {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.authContent,
+.explanationBox,
+.comparison {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 26px;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.1);
+}
+
+.authContent {
+  padding: 38px;
+
+  h2 {
+    margin: 0 0 14px;
+    font-size: 34px;
+    color: #0f172a;
+  }
+
+  > p {
+    margin: 0 0 28px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: #475569;
+  }
+}
+
+.googleButton {
+  height: 46px;
+  border: 1px solid #dadce0;
+  background: #fff;
+  color: #3c4043;
+  border-radius: 4px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: #f8fafd;
+    box-shadow: 0 1px 3px rgba(60, 64, 67, 0.2);
+  }
+}
+
+.sessionBox {
+  padding: 22px;
+  border-radius: 18px;
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+
+  strong {
+    display: block;
+    color: #166534;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 0;
+    color: #166534;
+  }
+}
+
+.avatar {
+  border-radius: 50%;
+}
+
+.sessionActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton,
+.neutralButton {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton {
+  background: #111827;
+  color: white;
+}
+
+.secondaryButton {
+  background: #2563eb;
+  color: white;
+}
+
+.neutralButton {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.explanationBox {
+  padding: 34px;
+
+  h3 {
+    margin: 0 0 18px;
+    font-size: 26px;
+    color: #0f172a;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #334155;
+    line-height: 1.8;
+  }
+}
+
+.comparison {
+  padding: 34px;
+  margin-bottom: 28px;
+
+  h2 {
+    margin: 0 0 22px;
+    font-size: 30px;
+    color: #0f172a;
+  }
+}
+
+.comparisonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.attackBox,
+.safeBox {
+  border-radius: 20px;
+  padding: 24px;
+
+  span {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    color: #111827;
+  }
+
+  p {
+    margin: 0;
+    color: #334155;
+    line-height: 1.6;
+  }
+}
+
+.attackBox {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+
+  span {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.safeBox {
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+
+  span {
+    background: #dcfce7;
+    color: #166534;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  a {
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  a:first-child {
+    background: #111827;
+    color: white;
+  }
+
+  a:last-child {
+    background: #e5e7eb;
+    color: #111827;
+  }
+}
+
+@media (max-width: 900px) {
+  .authCard,
+  .comparisonGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .authContent,
+  .explanationBox,
+  .comparison {
+    padding: 26px;
+  }
+}
