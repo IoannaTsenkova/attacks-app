@@ -3,17 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { LoginPanel } from "@/components/mfa-fatigue/LoginPanel";
-import { MfaRequestPanel } from "@/components/mfa-fatigue/MfaRequestPanel";
 import { PhoneMockup } from "@/components/mfa-fatigue/PhoneMockup";
 import { SimulationResult } from "@/components/mfa-fatigue/SimulationResults";
+import { VerificationStatusPanel } from "@/components/mfa-fatigue/VerificationStatusPanel";
 import { mfaRequests } from "@/utils/mfaFatigueData";
 import type { AttackStep, SimulationResultType } from "@/utils/mfaFatigueTypes";
 
-import styles from "./page.module.scss";
+import styles from "@/styles/mfa-fatigue.module.scss";
 
 export default function MfaFatigueAttackPage() {
   const [step, setStep] = useState<AttackStep>("login");
-  const [requestIndex, setRequestIndex] = useState(0);
+  const [requestIndex, setRequestIndex] = useState(-1);
   const [result, setResult] = useState<SimulationResultType | null>(null);
 
   const visibleRequests = useMemo(
@@ -21,19 +21,24 @@ export default function MfaFatigueAttackPage() {
     [requestIndex],
   );
 
-  const currentRequest = mfaRequests[requestIndex];
-
-  const isLastRequest = requestIndex === mfaRequests.length - 1;
+  const isLastRequest = requestIndex >= mfaRequests.length - 1;
   const isSuspicious = requestIndex >= 2;
 
   useEffect(() => {
-    if (step !== "mfa" || isLastRequest) return;
+    if (step !== "mfa") return;
 
-    const timer = window.setTimeout(() => {
+    const timer = globalThis.setTimeout(() => {
+      mfaRequests.push({
+        id: mfaRequests.length + 1,
+        location: "Unknown location",
+        device: "Windows device",
+        browser: "Chrome",
+        time: "Just now",
+      });
       setRequestIndex((current) => current + 1);
     }, 2500);
 
-    return () => window.clearTimeout(timer);
+    return () => globalThis.clearTimeout(timer);
   }, [step, requestIndex, isLastRequest]);
 
   const handleLoginSubmit = () => {
@@ -52,7 +57,7 @@ export default function MfaFatigueAttackPage() {
 
   const handleRestart = () => {
     setStep("login");
-    setRequestIndex(0);
+    setRequestIndex(-1);
     setResult(null);
   };
 
@@ -71,14 +76,10 @@ export default function MfaFatigueAttackPage() {
         <div className={styles.leftPanel}>
           {step === "login" && <LoginPanel onSubmit={handleLoginSubmit} />}
 
-          {step === "mfa" && currentRequest && (
-            <MfaRequestPanel
-              request={currentRequest}
+          {step === "mfa" && (
+            <VerificationStatusPanel
               requestCount={requestIndex + 1}
-              totalRequests={mfaRequests.length}
               isSuspicious={isSuspicious}
-              onApprove={handleApprove}
-              onDeny={handleDeny}
             />
           )}
 
@@ -87,7 +88,13 @@ export default function MfaFatigueAttackPage() {
           )}
         </div>
 
-        <PhoneMockup requests={visibleRequests} isSuspicious={isSuspicious} />
+        <PhoneMockup
+          requests={visibleRequests}
+          isSuspicious={isSuspicious}
+          canRespond={step === "mfa"}
+          onApprove={handleApprove}
+          onDeny={handleDeny}
+        />
       </section>
     </main>
   );

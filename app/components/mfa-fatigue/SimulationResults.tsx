@@ -1,4 +1,4 @@
-import styles from "@/attacks/mfa-fatigue/page.module.scss";
+import styles from "@/styles/mfa-fatigue.module.scss";
 import type { SimulationResultType } from "@/utils/mfaFatigueTypes";
 
 type SimulationResultProps = {

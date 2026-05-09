@@ -1,15 +1,23 @@
-import styles from "@/attacks/mfa-fatigue/page.module.scss";
+import styles from "@/styles/mfa-fatigue.module.scss";
 import type { MfaRequest } from "@/utils/mfaFatigueTypes";
 
 type PhoneMockupProps = {
   requests: MfaRequest[];
   isSuspicious: boolean;
+  canRespond: boolean;
+  onApprove: () => void;
+  onDeny: () => void;
 };
 
 export function PhoneMockup({
   requests,
   isSuspicious,
+  canRespond,
+  onApprove,
+  onDeny,
 }: Readonly<PhoneMockupProps>) {
+  const latestRequest = requests.at(-1);
+
   return (
     <aside className={styles.phoneWrapper} aria-label="Simulated phone screen">
       <div className={styles.phone}>
@@ -39,10 +47,23 @@ export function PhoneMockup({
             </article>
           ))}
         </div>
+        {canRespond && latestRequest && (
+          <div className={styles.phoneActions}>
+            <button
+              className={styles.phoneApproveButton}
+              type="button"
+              onClick={onApprove}
+            >
+              Approve
+            </button>
 
-        {isSuspicious && (
-          <div className={styles.phoneWarning}>
-            Unusual number of approval requests detected.
+            <button
+              className={styles.phoneDenyButton}
+              type="button"
+              onClick={onDeny}
+            >
+              Deny
+            </button>
           </div>
         )}
       </div>

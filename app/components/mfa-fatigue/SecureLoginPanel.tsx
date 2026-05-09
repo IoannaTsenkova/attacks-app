@@ -1,10 +1,10 @@
 import styles from "@/styles/mfa-fatigue.module.scss";
 
-type LoginPanelProps = {
+type SecureLoginPanelProps = {
   onSubmit: () => void;
 };
 
-export function LoginPanel({ onSubmit }: Readonly<LoginPanelProps>) {
+export function SecureLoginPanel({ onSubmit }: SecureLoginPanelProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
@@ -14,39 +14,26 @@ export function LoginPanel({ onSubmit }: Readonly<LoginPanelProps>) {
     <form className={styles.card} onSubmit={handleSubmit}>
       <div>
         <p className={styles.cardLabel}>Corporate VPN</p>
-        <h2>Sign in to continue</h2>
+        <h2>Sign in securely</h2>
         <p className={styles.muted}>
-          Use your work account to access the secure internal portal.
+          Enter your company credentials. The second step will require number
+          matching on your trusted device.
         </p>
       </div>
 
       <label className={styles.field}>
         Email address
-        <input
-          type="email"
-          placeholder="employee@company.com"
-          autoComplete="email"
-          required={true}
-        />
+        <input type="email" placeholder="employee@company.com" required />
       </label>
 
       <label className={styles.field}>
         Password
-        <input
-          type="password"
-          placeholder="Enter password"
-          autoComplete="current-password"
-          required={true}
-        />
+        <input type="password" placeholder="Enter password" required />
       </label>
 
       <button className={styles.primaryButton} type="submit">
-        Sign in
+        Continue
       </button>
-
-      <p className={styles.helperText}>
-        After submitting, a approval request will be sent.
-      </p>
     </form>
   );
 }
