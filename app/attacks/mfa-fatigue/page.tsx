@@ -4,8 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import { LoginPanel } from "@/components/mfa-fatigue/LoginPanel";
 import { PhoneMockup } from "@/components/mfa-fatigue/PhoneMockup";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import { SimulationResult } from "@/components/mfa-fatigue/SimulationResults";
 import { VerificationStatusPanel } from "@/components/mfa-fatigue/VerificationStatusPanel";
+import { trackAttackEvent } from "@/utils/analytics";
 import { mfaRequests } from "@/utils/mfaFatigueData";
 import type { AttackStep, SimulationResultType } from "@/utils/mfaFatigueTypes";
 
@@ -23,6 +25,13 @@ export default function MfaFatigueAttackPage() {
 
   const isLastRequest = requestIndex >= mfaRequests.length - 1;
   const isSuspicious = requestIndex >= 2;
+
+  useEffect(() => {
+    trackAttackEvent({
+      attack: "mfa",
+      event: "started",
+    });
+  }, []);
 
   useEffect(() => {
     if (step !== "mfa") return;
@@ -46,11 +55,19 @@ export default function MfaFatigueAttackPage() {
   };
 
   const handleApprove = () => {
+    trackAttackEvent({
+      attack: "mfa",
+      event: "approved",
+    });
     setResult("approved");
     setStep("result");
   };
 
   const handleDeny = () => {
+    trackAttackEvent({
+      attack: "mfa",
+      event: "denied",
+    });
     setResult("denied");
     setStep("result");
   };
@@ -63,6 +80,11 @@ export default function MfaFatigueAttackPage() {
 
   return (
     <main className={styles.page}>
+      <ScenarioNavigation
+        secureHref={result ? "/attacks/mfa-fatigue/secure" : undefined}
+        showDashboard={Boolean(result)}
+      />
+
       <section className={styles.hero}>
         <p className={styles.eyebrow}>Secure Workspace</p>
         <h1>Corporate VPN Access</h1>

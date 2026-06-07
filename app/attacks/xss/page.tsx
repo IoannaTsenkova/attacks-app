@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 
 import { FeedbackForm } from "@/components/xss/FeedbackForm";
 import { FeedbackPreview } from "@/components/xss/FeedbackPreview";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import { TokenPanel } from "@/components/xss/TokenPanel";
 import { XssSimulationResult } from "@/components/xss/XssSimulationResult";
+import { trackAttackEvent } from "@/utils/analytics";
 
 import styles from "@/styles/xss.module.scss";
 
@@ -26,6 +28,11 @@ export default function XssAttackPage() {
   sessionStorage.setItem(STORAGE_KEY, MOCK_TOKEN);
 
   useEffect(() => {
+    trackAttackEvent({
+      attack: "xss",
+      event: "started",
+    });
+
     window.captureDemoToken = (token: string | null) => {
       setCapturedToken(token);
     };
@@ -34,6 +41,17 @@ export default function XssAttackPage() {
       delete window.captureDemoToken;
     };
   }, []);
+
+  useEffect(() => {
+    if (!capturedToken) {
+      return;
+    }
+
+    trackAttackEvent({
+      attack: "xss",
+      event: "token_captured",
+    });
+  }, [capturedToken]);
 
   const handleSubmit = () => {
     setSubmittedFeedback(feedback);
@@ -48,6 +66,11 @@ export default function XssAttackPage() {
 
   return (
     <main className={styles.page}>
+      <ScenarioNavigation
+        secureHref={capturedToken ? "/attacks/xss/secure" : undefined}
+        showDashboard={Boolean(capturedToken)}
+      />
+
       <section className={styles.hero}>
         <p className={styles.eyebrow}>Support Portal</p>
         <h1>Customer Feedback Center</h1>

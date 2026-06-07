@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import styles from "@/styles/clickjacking.module.scss";
 import { trackAttackEvent } from "@/utils/analytics";
 
@@ -25,10 +26,6 @@ export default function ClickjackingAttackPage() {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "CLICKJACKING_ACTION_TRIGGERED") {
         setIsTriggered(true);
-        trackAttackEvent({
-          attack: "clickjacking",
-          event: "victim",
-        });
       }
     };
 
@@ -38,6 +35,13 @@ export default function ClickjackingAttackPage() {
 
   return (
     <main className={styles.page}>
+      <ScenarioNavigation
+        secureHref={
+          isTriggered ? "/attacks/clickjacking/secure" : undefined
+        }
+        showDashboard={isTriggered}
+      />
+
       <section className={styles.shell}>
         <aside className={styles.sidebar}>
           <div className={styles.logo}>

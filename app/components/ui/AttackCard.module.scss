@@ -1,4 +1,5 @@
 .card {
+  position: relative;
   padding: 25px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.7);
@@ -27,6 +28,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
 
@@ -54,6 +56,27 @@
     &:hover {
       background: #d1d5db;
     }
+  }
+
+  a:only-child {
+    min-width: 160px;
+    background: #111;
+    color: white;
+    text-align: center;
+
+    &:hover {
+      background: #333;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions a {
+    text-align: center;
   }
 }
 

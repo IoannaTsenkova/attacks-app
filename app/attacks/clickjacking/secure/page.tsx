@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import {
   CheckCircle2,
   FileLock2,
@@ -9,19 +8,14 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import styles from "@/styles/clickjacking.module.scss";
-import { trackAttackEvent } from "@/utils/analytics";
 
 export default function ClickjackingSecurePage() {
-  useEffect(() => {
-    trackAttackEvent({
-      attack: "clickjacking",
-      event: "started",
-    });
-  }, []);
-
   return (
     <main className={styles.page}>
+      <ScenarioNavigation attackHref="/attacks/clickjacking" />
+
       <section className={styles.shell}>
         <aside className={styles.sidebar}>
           <div className={styles.logo}>
@@ -90,16 +84,7 @@ export default function ClickjackingSecurePage() {
               </div>
             </div>
 
-            <button
-              className={styles.secureButton}
-              type="button"
-              onClick={() => {
-                trackAttackEvent({
-                  attack: "clickjacking",
-                  event: "safe",
-                });
-              }}
-            >
+            <button className={styles.secureButton} type="button">
               Confirm visible security action
             </button>
           </section>
