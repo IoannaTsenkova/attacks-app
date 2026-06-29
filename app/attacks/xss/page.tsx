@@ -25,9 +25,9 @@ export default function XssAttackPage() {
   const [submittedFeedback, setSubmittedFeedback] = useState("");
   const [capturedToken, setCapturedToken] = useState<string | null>(null);
 
-  sessionStorage.setItem(STORAGE_KEY, MOCK_TOKEN);
-
   useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY, MOCK_TOKEN);
+
     trackAttackEvent({
       attack: "xss",
       event: "started",
