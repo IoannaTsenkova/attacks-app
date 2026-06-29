@@ -1,11 +1,20 @@
 "use client";
 
+import { useState } from "react";
+
 import styles from "@/styles/clickjacking.module.scss";
-import { trackAttackEvent } from "@/utils/analytics";
+import { trackAttackEventOnce } from "@/utils/analytics";
 
 export default function ClickjackingTargetPage() {
+  const [hasTriggered, setHasTriggered] = useState(false);
+
   const handleAuthorize = () => {
-    trackAttackEvent({
+    if (hasTriggered) {
+      return;
+    }
+
+    setHasTriggered(true);
+    trackAttackEventOnce({
       attack: "clickjacking",
       event: "hidden_action_triggered",
     });
@@ -17,9 +26,10 @@ export default function ClickjackingTargetPage() {
       <button
         className={styles.realSensitiveButton}
         type="button"
+        disabled={hasTriggered}
         onClick={handleAuthorize}
       >
-        Approve security policy
+        {hasTriggered ? "Policy approved" : "Approve security policy"}
       </button>
     </main>
   );

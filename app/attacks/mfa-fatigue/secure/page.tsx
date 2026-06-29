@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { SecureLoginPanel } from "@/components/mfa-fatigue/SecureLoginPanel";
 import { SecurePhoneMockup } from "@/components/mfa-fatigue/SecurePhoneMockup";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import { SecureResult } from "@/components/mfa-fatigue/SecureResult";
 import { SecureVerificationPanel } from "@/components/mfa-fatigue/SecureVerificationPanel";
 
@@ -85,6 +86,8 @@ export default function MfaFatigueSecurePage() {
 
   return (
     <main className={styles.page}>
+      <ScenarioNavigation attackHref="/attacks/mfa-fatigue" />
+
       <section className={styles.hero}>
         <p className={styles.eyebrow}>Secure Workspace</p>
         <h1>Protected Corporate VPN Access</h1>

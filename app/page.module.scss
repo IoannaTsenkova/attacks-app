@@ -11,3 +11,15 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 25px;
 }
+
+.dashboardCard {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(100%, 537px);
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

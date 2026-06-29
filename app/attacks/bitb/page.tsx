@@ -1,16 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.scss";
 import FakeBrowserPopup from "@/components/bitb/FakeBrowserPopup";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
+import { trackAttackEvent } from "@/utils/analytics";
 
 export default function BitBAttackPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState("");
+  useEffect(() => {
+    trackAttackEvent({
+      attack: "bitb",
+      event: "started",
+    });
+  }, []);
 
   return (
     <main className={styles.container}>
+      <ScenarioNavigation
+        secureHref={submittedEmail ? "/attacks/bitb/secure" : undefined}
+        showDashboard={Boolean(submittedEmail)}
+      />
+
       <section className={styles.portalCard}>
         <div className={styles.portalHeader}>
           <span className={styles.logoMark}>S</span>
@@ -28,7 +41,9 @@ export default function BitBAttackPage() {
           </p>
           <button
             className={styles.googleButton}
-            onClick={() => setShowPopup(true)}
+            onClick={() => {
+              setShowPopup(true);
+            }}
           >
             <Image
               src="/google-button-logo.png"
@@ -67,6 +82,10 @@ export default function BitBAttackPage() {
           onSubmit={(email) => {
             setSubmittedEmail(email);
             setShowPopup(false);
+            trackAttackEvent({
+              attack: "bitb",
+              event: "victim",
+            });
           }}
         />
       )}

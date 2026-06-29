@@ -34,6 +34,12 @@ export default function Home() {
           description="Подвеждащ интерфейс"
           attackLink="/attacks/clickjacking"
         />
+        <AttackCard
+          title="Live Results Dashboard"
+          description="View anonymous analytics collected from attack simulations."
+          primaryLink={{ href: "/dashboard", label: "Open Dashboard" }}
+          className={styles.dashboardCard}
+        />
       </div>
     </main>
   );

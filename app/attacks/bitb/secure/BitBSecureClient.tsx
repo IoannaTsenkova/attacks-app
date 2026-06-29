@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import type { Session } from "next-auth";
 import styles from "./page.module.scss";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 type Props = {
   session: Session | null;
 };
@@ -29,6 +29,8 @@ export default function BitBSecureClient({ session }: Readonly<Props>) {
 
   return (
     <main className={styles.container}>
+      <ScenarioNavigation attackHref="/attacks/bitb" />
+
       <section className={styles.hero}>
         <span className={styles.badge}>Secure mode</span>
         <h1>Secure Google authentication</h1>
@@ -136,11 +138,6 @@ export default function BitBSecureClient({ session }: Readonly<Props>) {
           </div>
         </div>
       </section>
-
-      <div className={styles.actions}>
-        <Link href="/attacks/bitb">Back to attack simulation</Link>
-        <Link href="/">Back to dashboard</Link>
-      </div>
     </main>
   );
 }

@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 
 import { SecureFeedbackForm } from "@/components/xss/SecureFeedbackForm";
 import { SecureFeedbackPreview } from "@/components/xss/SecureFeedbackPreview";
+import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import { SecureSessionPanel } from "@/components/xss/SecureSessionPanel";
 import { SanitizationResult } from "@/components/xss/SanitizationResult";
 
@@ -46,6 +47,8 @@ export default function XssSecurePage() {
 
   return (
     <main className={styles.page}>
+      <ScenarioNavigation attackHref="/attacks/xss" />
+
       <section className={styles.hero}>
         <p className={styles.eyebrow}>Secure Support Portal</p>
         <h1>Protected Feedback Center</h1>
