@@ -11,14 +11,14 @@ import {
 
 import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import styles from "@/styles/clickjacking.module.scss";
-import { trackAttackEvent } from "@/utils/analytics";
+import { trackAttackEventOnce } from "@/utils/analytics";
 
 export default function ClickjackingAttackPage() {
   const [isTriggered, setIsTriggered] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
-    trackAttackEvent({
+    trackAttackEventOnce({
       attack: "clickjacking",
       event: "started",
     });

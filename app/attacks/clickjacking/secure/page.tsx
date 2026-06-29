@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   CheckCircle2,
   FileLock2,
@@ -10,8 +11,26 @@ import {
 
 import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import styles from "@/styles/clickjacking.module.scss";
+import { trackAttackEventOnce } from "@/utils/analytics";
 
 export default function ClickjackingSecurePage() {
+  const [hasConfirmedSafely, setHasConfirmedSafely] = useState(false);
+
+  useEffect(() => {
+    trackAttackEventOnce({
+      attack: "clickjacking",
+      event: "blocked",
+    });
+  }, []);
+
+  const handleSafeConfirmation = () => {
+    setHasConfirmedSafely(true);
+    trackAttackEventOnce({
+      attack: "clickjacking",
+      event: "safe",
+    });
+  };
+
   return (
     <main className={styles.page}>
       <ScenarioNavigation attackHref="/attacks/clickjacking" />
@@ -84,8 +103,15 @@ export default function ClickjackingSecurePage() {
               </div>
             </div>
 
-            <button className={styles.secureButton} type="button">
-              Confirm visible security action
+            <button
+              className={styles.secureButton}
+              type="button"
+              disabled={hasConfirmedSafely}
+              onClick={handleSafeConfirmation}
+            >
+              {hasConfirmedSafely
+                ? "Visible action confirmed"
+                : "Confirm visible security action"}
             </button>
           </section>
 

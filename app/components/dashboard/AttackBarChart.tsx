@@ -16,7 +16,9 @@ type AttackBarChartProps = {
 };
 
 export function AttackBarChart({ data }: AttackBarChartProps) {
-  if (!data.length) {
+  const totalSuccessfulEvents = data.reduce((sum, item) => sum + item.count, 0);
+
+  if (!totalSuccessfulEvents) {
     return <p>No successful attack results recorded yet.</p>;
   }
 

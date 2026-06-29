@@ -39,3 +39,18 @@ export async function trackAttackEvent({
     console.error("Failed to track attack event:", error.message);
   }
 }
+
+export function trackAttackEventOnce(params: TrackAttackEventParams) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const storageKey = `attack_event_once:${params.attack}:${params.event}`;
+
+  if (sessionStorage.getItem(storageKey)) {
+    return;
+  }
+
+  sessionStorage.setItem(storageKey, "true");
+  trackAttackEvent(params);
+}

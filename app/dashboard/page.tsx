@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { AttackBarChart } from "@/components/dashboard/AttackBarChart";
+import { AttackPieChart } from "@/components/dashboard/AttackPieChart";
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import ScenarioNavigation from "@/components/shared/ScenarioNavigation";
 import { supabase } from "@/utils/supabase";
@@ -26,6 +27,13 @@ type DashboardStats = {
   xssCaptured: number;
   clickjackingTriggered: number;
 };
+
+const ATTACK_SCENARIOS = [
+  { key: "bitb", label: "BitB" },
+  { key: "mfa", label: "MFA Fatigue" },
+  { key: "xss", label: "DOM XSS" },
+  { key: "clickjacking", label: "Clickjacking" },
+] as const;
 
 function calculateStats(events: AttackEventRow[]): DashboardStats {
   const uniqueParticipants = new Set(events.map((event) => event.session_id));
@@ -54,14 +62,9 @@ function calculateStats(events: AttackEventRow[]): DashboardStats {
 }
 
 function getAttackLabel(attack: string) {
-  const labels: Record<string, string> = {
-    bitb: "BitB",
-    mfa: "MFA Fatigue",
-    xss: "DOM XSS",
-    clickjacking: "Clickjacking",
-  };
+  const scenario = ATTACK_SCENARIOS.find((item) => item.key === attack);
 
-  return labels[attack] ?? attack;
+  return scenario?.label ?? attack;
 }
 
 function calculateChartData(events: AttackEventRow[]) {
@@ -82,10 +85,14 @@ function calculateChartData(events: AttackEventRow[]) {
     {},
   );
 
-  return Object.entries(grouped).map(([attack, count]) => ({
-    attack: getAttackLabel(attack),
-    count,
+  return ATTACK_SCENARIOS.map((scenario) => ({
+    attack: scenario.label,
+    count: grouped[scenario.key] ?? 0,
   }));
+}
+
+function formatPercentage(value: number) {
+  return `${value.toFixed(1)}%`;
 }
 
 export default function DashboardPage() {
@@ -95,6 +102,39 @@ export default function DashboardPage() {
 
   const stats = useMemo(() => calculateStats(events), [events]);
   const chartData = useMemo(() => calculateChartData(events), [events]);
+  const totalSuccessfulAttackEvents = useMemo(
+    () => chartData.reduce((sum, item) => sum + item.count, 0),
+    [chartData],
+  );
+  const summaryRows = useMemo(
+    () =>
+      chartData.map((item) => ({
+        ...item,
+        percentage:
+          totalSuccessfulAttackEvents > 0
+            ? (item.count / totalSuccessfulAttackEvents) * 100
+            : 0,
+      })),
+    [chartData, totalSuccessfulAttackEvents],
+  );
+  const observations = useMemo(() => {
+    const sortedScenarios = [...chartData].sort((a, b) => b.count - a.count);
+    const mostTriggered = sortedScenarios[0];
+    const leastTriggered = [...chartData].sort((a, b) => a.count - b.count)[0];
+
+    return {
+      mostTriggered:
+        totalSuccessfulAttackEvents > 0
+          ? `${mostTriggered.attack} (${mostTriggered.count})`
+          : "No successful scenario recorded",
+      leastTriggered:
+        totalSuccessfulAttackEvents > 0
+          ? `${leastTriggered.attack} (${leastTriggered.count})`
+          : "No successful scenario recorded",
+      totalSuccessfulAttackEvents,
+      participants: stats.uniqueParticipants,
+    };
+  }, [chartData, stats.uniqueParticipants, totalSuccessfulAttackEvents]);
   const hasEvents = events.length > 0;
 
   useEffect(() => {
@@ -131,12 +171,9 @@ export default function DashboardPage() {
           schema: "public",
           table: "attack_events",
         },
-        (payload) => {
+        (payload: { new: AttackEventRow }) => {
           setErrorMessage(null);
-          setEvents((currentEvents) => [
-            payload.new as AttackEventRow,
-            ...currentEvents,
-          ]);
+          setEvents((currentEvents) => [payload.new, ...currentEvents]);
         },
       )
       .subscribe();
@@ -185,14 +222,14 @@ export default function DashboardPage() {
       ) : (
         <>
           <section className={styles.statsGrid}>
-            <StatsCard label="Total events" value={stats.totalEvents} />
+            <StatsCard label="Total Events" value={stats.totalEvents} />
             <StatsCard label="Participants" value={stats.uniqueParticipants} />
-            <StatsCard label="BitB victims" value={stats.bitbVictims} />
-            <StatsCard label="MFA approved" value={stats.mfaApproved} />
-            <StatsCard label="MFA denied" value={stats.mfaDenied} />
-            <StatsCard label="XSS captured" value={stats.xssCaptured} />
+            <StatsCard label="BitB Victims" value={stats.bitbVictims} />
+            <StatsCard label="MFA Approved" value={stats.mfaApproved} />
+            <StatsCard label="MFA Denied" value={stats.mfaDenied} />
+            <StatsCard label="XSS Captured" value={stats.xssCaptured} />
             <StatsCard
-              label="Clickjacking triggered"
+              label="Clickjacking Triggered"
               value={stats.clickjackingTriggered}
             />
           </section>
@@ -204,6 +241,70 @@ export default function DashboardPage() {
             </div>
 
             <AttackBarChart data={chartData} />
+          </section>
+
+          <section className={styles.chartCard}>
+            <div>
+              <p className={styles.cardLabel}>Scenario distribution</p>
+              <h2>Distribution of Attack Scenarios</h2>
+            </div>
+
+            <AttackPieChart data={chartData} />
+          </section>
+
+          <section className={styles.tableCard}>
+            <div>
+              <p className={styles.cardLabel}>Aggregate results</p>
+              <h2>Successful events by scenario</h2>
+            </div>
+
+            <div className={styles.tableWrapper}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Scenario</th>
+                    <th>Successful Events</th>
+                    <th>Percentage of Total Events</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {summaryRows.map((row) => (
+                    <tr key={row.attack}>
+                      <td>{row.attack}</td>
+                      <td>{row.count}</td>
+                      <td>{formatPercentage(row.percentage)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className={styles.observationsCard}>
+            <div>
+              <p className={styles.cardLabel}>Statistical summary</p>
+              <h2>Observations</h2>
+            </div>
+
+            <div className={styles.observationsGrid}>
+              <article>
+                <span>Most triggered scenario</span>
+                <strong>{observations.mostTriggered}</strong>
+              </article>
+              <article>
+                <span>Least triggered scenario</span>
+                <strong>{observations.leastTriggered}</strong>
+              </article>
+              <article>
+                <span>Total successful attack events</span>
+                <strong>{observations.totalSuccessfulAttackEvents}</strong>
+              </article>
+              <article>
+                <span>Number of participants</span>
+                <strong>{observations.participants}</strong>
+              </article>
+            </div>
           </section>
 
           <section className={styles.tableCard}>
